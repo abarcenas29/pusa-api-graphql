@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+  pusa:
+    build:
+      dockerfile: .Dockerfile
+      context: '.'
+    volumes:
+      - ./:/app
+    networks:
+      pusa-net:
+    depends_on:
+      - db
+    ports:
+      - 5000:5000
+    entrypoint: 'sh ./build.sh'
+
+  db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - dbPusa:/var/lib/postgresql/data
+    networks:
+      - graphqldemo
+    environment:
+      POSTGRES_PASSWORD: example
+
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      pusa-net:
+    ports:
+      - 8080:8080
+
+volumes:
+  dbPusa:
+networks:
+  pusa-net:
+
