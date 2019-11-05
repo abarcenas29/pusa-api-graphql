@@ -9,8 +9,9 @@ import {
 export default new GraphQLObjectType({
   name: 'User',
   fields: {
-    uid: { 
-      type: new GraphQLNonNull(GraphQLID)
+    id: { 
+      type: new GraphQLNonNull(GraphQLID),
+      resolve: obj => obj.uid
     },
     email: { 
       type: new GraphQLNonNull(GraphQLString) 

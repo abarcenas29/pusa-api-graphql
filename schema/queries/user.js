@@ -1,18 +1,40 @@
+import { GraphQLID, GraphQLNonNull, GraphQLList } from 'graphql'
+import {
+  connectionDefinitions,
+  connectionArgs,
+  connectionFromPromisedArray
+} from 'graphql-relay'
+import data from './../data'
+
 import TypeUser from './../types/user'
 
-const userQuery = {
+const userConnection = connectionDefinitions({
+  name: 'user',
+  nodeType: TypeUser
+})
+
+const user = {
   type: TypeUser,
-  resolve: () => ({
-    uid: '123424',
-    email: 'testing@mail.com',
-    first_name: 'Solidad',
-    last_name: 'Romero',
-    password: 'testing',
-    type: 'employee',
-    address: 'test address',
-    contact_no: '123-4567-890',
-    created_by: '1234345'
-  })
+  args: {
+    id: {
+      type: GraphQLNonNull(GraphQLID)
+    }
+  },
+  resolve: (s, a, c, i) => {
+    return data.filter(i => i.uid === a.id)[0]
+  }
 }
 
-export default userQuery
+export default {
+  user,
+  usersConnection: {
+    type: userConnection.connectionType,
+    args: connectionArgs,
+    resolve: (_, args) => connectionFromPromisedArray(
+      new Promise((resolve, reject) => {
+        resolve(data)
+      }),
+      args
+    )
+  }
+}

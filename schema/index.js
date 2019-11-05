@@ -1,10 +1,10 @@
 import { GraphQLSchema, GraphQLObjectType } from 'graphql'
-import userQuery from './queries/user'
+import userQueries from './queries/user'
 
 const Query = new GraphQLObjectType({
   name: 'Query',
   fields: {
-    user: userQuery
+    ...userQueries
   }
 })
 
