@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon --exec babel-node index.js",
     "start": "babel-node index.js",
+    "dump:schema": "babel-node internals/dumpSql.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

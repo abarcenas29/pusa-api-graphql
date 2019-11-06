@@ -8,7 +8,7 @@ import data from './../data'
 
 import TypeUser from './../types/user'
 
-const userConnection = connectionDefinitions({
+export const userConnection = connectionDefinitions({
   name: 'user',
   nodeType: TypeUser
 })

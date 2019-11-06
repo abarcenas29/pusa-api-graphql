@@ -6,12 +6,14 @@ import {
   GraphQLNonNull
 } from 'graphql'
 
+import { globalIdField } from 'graphql-relay'
+
 export default new GraphQLObjectType({
   name: 'User',
   fields: {
     id: { 
       type: new GraphQLNonNull(GraphQLID),
-      resolve: obj => obj.uid
+      resolve: o => o.uid
     },
     email: { 
       type: new GraphQLNonNull(GraphQLString) 
@@ -21,33 +23,6 @@ export default new GraphQLObjectType({
     },
     last_name: { 
       type: new GraphQLNonNull(GraphQLString)
-    },
-    middle_name: { 
-      type: GraphQLString
-    },
-    password: { 
-      type: new GraphQLNonNull(GraphQLString) 
-    },
-    type: {
-      type: new GraphQLNonNull(
-        new GraphQLEnumType({
-          name: 'type',
-          values: {
-            employee: { value: 'employee'},
-            admin: { value: 'admin'},
-            owner: { value: 'owner'}
-          }
-        })
-      )
-    },
-    address: {
-      type: GraphQLString
-    },
-    contact_no: {
-      type: GraphQLString
-    },
-    created_by: {
-      type: new GraphQLNonNull(GraphQLID)
     }
   }
 })
