@@ -1,37 +1,40 @@
-import { GraphQLNonNull } from 'graphql'
+import { GraphQLNonNull, GraphQLString } from 'graphql'
 import { 
-  connectionDefinitions, 
-  connectionFromPromisedArray, 
-  connectionArgs
+  offsetToCursor,
+  mutationWithClientMutationId
 } from 'graphql-relay'
 
-import TypeUser from './../types/user'
-import InputUser from './../inputs/user'
+import {userConnection, user} from './../types/user'
 
 import data from './../data'
 
-export const userConnection = connectionDefinitions({
-  name: 'userList',
-  nodeType: TypeUser
-})
-
-const addUser = {
-  type: userConnection.connectionType,
-  args: {
-    user: {
-      type: InputUser
+const addUser = mutationWithClientMutationId({
+  name: 'addUser',
+  inputFields: {
+    email: { 
+      type: new GraphQLNonNull(GraphQLString)
     },
-    ...connectionArgs
+    first_name: {
+      type: new GraphQLNonNull(GraphQLString)
+    },
+    last_name: {
+      type: new GraphQLNonNull(GraphQLString)
+    }
   },
-  resolve: (_, args) => connectionFromPromisedArray(
-    new Promise((resolve, reject) => {
-      console.log(args, 'args')
-      data.push({uid: `${data.length + 1}`, ...args.user})
-      resolve(data)
-    }),
-    args
-  )
-}
+  outputFields: {
+    userEdge: {
+      type: userConnection.edgeType,
+      resolve: obj => ({
+        node: obj[obj.length - 1],
+        cursor: offsetToCursor(obj.length - 1)
+      })
+    }
+  },
+  mutateAndGetPayload: (args) => new Promise((resolve, reject) => {
+    data.push({uid: `${data.length + 1}`, ...args})
+    resolve(data)
+  })
+})
 
 export default {
   addUser

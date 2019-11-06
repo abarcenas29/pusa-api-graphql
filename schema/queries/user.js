@@ -1,40 +1,31 @@
 import { GraphQLID, GraphQLNonNull, GraphQLList } from 'graphql'
-import {
-  connectionDefinitions,
-  connectionArgs,
-  connectionFromPromisedArray
-} from 'graphql-relay'
+import { offsetToCursor } from 'graphql-relay'
 import data from './../data'
 
-import TypeUser from './../types/user'
+import { user, users, userConnection } from './../types/user'
 
-export const userConnection = connectionDefinitions({
-  name: 'user',
-  nodeType: TypeUser
-})
+const userStore = {}
 
-const user = {
-  type: TypeUser,
+const findUser = {
+  type: userConnection.edgeType,
   args: {
     id: {
       type: GraphQLNonNull(GraphQLID)
     }
   },
-  resolve: (s, a, c, i) => {
-    return data.filter(i => i.uid === a.id)[0]
+  resolve: (obj, args) => {
+    const node = data.filter(i => i.uid === args.id)[0]
+    const index = data.map(i => i.uid).indexOf(args.id)
+    return {node, cursor: offsetToCursor(index)}
   }
 }
 
+const listUser = {
+  type: users,
+  resolve: () => userStore
+}
+
 export default {
-  user,
-  usersConnection: {
-    type: userConnection.connectionType,
-    args: connectionArgs,
-    resolve: (_, args) => connectionFromPromisedArray(
-      new Promise((resolve, reject) => {
-        resolve(data)
-      }),
-      args
-    )
-  }
+  findUser,
+  listUser
 }

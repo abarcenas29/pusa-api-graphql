@@ -5,11 +5,17 @@ import {
   GraphQLEnumType,
   GraphQLNonNull
 } from 'graphql'
+import {
+  connectionDefinitions,
+  connectionArgs,
+  connectionFromPromisedArray,
+  globalIdField
+} from 'graphql-relay'
 
-import { globalIdField } from 'graphql-relay'
+import data from './../data'
 
-export default new GraphQLObjectType({
-  name: 'User',
+export const user = new GraphQLObjectType({
+  name: 'UserType',
   fields: {
     id: { 
       type: new GraphQLNonNull(GraphQLID),
@@ -26,3 +32,26 @@ export default new GraphQLObjectType({
     }
   }
 })
+
+export const userConnection = connectionDefinitions({
+  name: 'userConnection',
+  nodeType: user
+})
+
+export const users = new GraphQLObjectType({
+  name: 'UsersType',
+  fields: {
+    id: globalIdField(),
+    userConnection: {
+      type: userConnection.connectionType,
+      args: connectionArgs,
+      resolve: (_,args) => connectionFromPromisedArray(
+        new Promise((resolve, reject) => {
+          resolve(data)
+        }),
+        args
+      )
+    }
+  }
+})
+
