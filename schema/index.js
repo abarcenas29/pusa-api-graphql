@@ -2,6 +2,8 @@ import { GraphQLSchema, GraphQLObjectType } from 'graphql'
 import userQueries from './queries/user'
 import userMutations from './mutations/addUser'
 
+export const store = {}
+
 const Query = new GraphQLObjectType({
   name: 'Query',
   fields: {

@@ -41,7 +41,7 @@ export const userConnection = connectionDefinitions({
 export const users = new GraphQLObjectType({
   name: 'UsersType',
   fields: {
-    id: globalIdField(),
+    id: globalIdField('users'),
     userConnection: {
       type: userConnection.connectionType,
       args: connectionArgs,

@@ -2,9 +2,8 @@ import { GraphQLID, GraphQLNonNull, GraphQLList } from 'graphql'
 import { offsetToCursor } from 'graphql-relay'
 import data from './../data'
 
+import { store } from './../index'
 import { user, users, userConnection } from './../types/user'
-
-const userStore = {}
 
 const findUser = {
   type: userConnection.edgeType,
@@ -22,7 +21,7 @@ const findUser = {
 
 const listUser = {
   type: users,
-  resolve: () => userStore
+  resolve: () => store
 }
 
 export default {
